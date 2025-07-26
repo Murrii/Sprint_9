@@ -42,3 +42,8 @@ class RegisterPage(BasePage):
         self.wait_change_of_element(locators.CREATE_ACCOUNT_BUTTON_LOCATOR, REGISTER_BUTTON_TEXT)
         new_text = self.get_text_from_element(locators.CREATE_ACCOUNT_BUTTON_LOCATOR)
         return new_text == AUTH_BUTTON_TEXT
+
+    @allure.step("Нажимаем на кнопку Войти в хеадере")
+    def click_on_header_enter_button(self):
+        self.click_on_element(locators.HEADER_ENTER_BUTTON_LOCATOR)
+        self.wait_change_of_element(locators.CREATE_ACCOUNT_BUTTON_LOCATOR, REGISTER_BUTTON_TEXT)
