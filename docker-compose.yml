@@ -1,6 +1,6 @@
 services:
   selenoid:
-    image: "aerokube/selenoid:latest"
+    image: "aerokube/selenoid:1.11.3"
     container_name: selenoid
     ports:
       - "4444:4444"
@@ -18,7 +18,7 @@ services:
     command: ["-conf", "/etc/selenoid/browsers.json", "-container-network", "selenoid"]
 
   selenoid-ui:
-    image: "aerokube/selenoid-ui:latest"
+    image: "aerokube/selenoid-ui:1.10.11"
     container_name: selenoid-ui
     ports:
       - "8081:8080"
@@ -40,6 +40,8 @@ services:
     depends_on:
       - selenoid
     command: ["pytest"]
+    environment:
+      - SELENOID_URL=http://selenoid:4444/wd/hub
 
 networks:
   selenoid:

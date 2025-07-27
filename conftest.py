@@ -28,15 +28,20 @@ def generate_password():
 @pytest.fixture
 @allure.title("подключаем удаленный драйвер")
 def remote_driver():
-    options = ChromeOptions()
-    options.set_capability("browserName", "chrome")
-    options.set_capability("version", "latest")
-    options.set_capability("enableVNC", True)
-    options.set_capability("enableVideo", False)
+    try:
+        options = ChromeOptions()
+        options.set_capability("browserName", "chrome")
+        options.set_capability("version", "126.0")
+        options.set_capability("enableVNC", True)
+        options.set_capability("enableVideo", False)
 
-    driver = webdriver.Remote(command_executor='http://selenoid:4444/wd/hub', options=options)
-    yield driver
-    driver.quit()
+        driver = webdriver.Remote(command_executor='http://selenoid:4444/wd/hub', options=options)
+        yield driver
+        driver.quit()
+    except Exception as e:
+        print(f"Failed to connect to Selenoid: {str(e)}")
+        raise
+
 
 @pytest.fixture
 @allure.title("открываем страницу регистрации")
