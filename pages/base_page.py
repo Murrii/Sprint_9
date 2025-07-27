@@ -16,6 +16,10 @@ class BasePage:
     def find_element_with_wait_clickable(self, locator):
         return WebDriverWait(self.driver, 20).until(expected_conditions.element_to_be_clickable(locator))
 
+    # Ждем, пока элемент будет представлен на странице и возвращаем его
+    def find_element_with_wait_presence(self, locator):
+        return WebDriverWait(self.driver, 20).until(expected_conditions.presence_of_element_located(locator))
+
     # Ждем, пока элемент станет кликабельным и нажимаем на него
     # Чтобы клик стабильно проходил в Firefox, при появлении перекрывающего окна кликаем по нижнему слою
     def click_on_element(self, locator):
@@ -92,4 +96,17 @@ class BasePage:
     # пролистываем блок до конца списка
     def move_to_down_in_container(self, container_locator):
         self.driver.execute_script("arguments[0].scrollTop = arguments[0].scrollHeight", container_locator)
+
+    # пролистываем до конца страницы
+    def move_page_down(self):
+        self.driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+
+    # загружаем картинку из переданного пути
+    def load_picture(self, input_locator, picture_path):
+        input_field = self.find_element_with_wait_presence(input_locator)
+        print(picture_path)
+        input_field.send_keys(picture_path)
+
+
+
 

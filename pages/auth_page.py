@@ -18,6 +18,12 @@ class AuthPage(BasePage):
     def click_or_login_button(self):
         self.click_on_element(locators.ENTER_ACCOUNT_BUTTON_LOCATOR)
 
+    @allure.step("Авторизируемся с валидными данными")
+    def auth_with_walid_data(self):
+        self.enter_email()
+        self.enter_password()
+        self.click_or_login_button()
+
     @allure.step("Проверяем, что заголовок страницы авторизации поменялся на заголовок главной страницы")
     def is_auth_page_title_switch_to_main_page_title(self):
         self.wait_change_of_element(locators.PAGE_TITLE_LOCATOR, AUTH_TITLE_TEXT)
