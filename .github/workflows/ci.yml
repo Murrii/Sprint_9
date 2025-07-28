@@ -4,10 +4,12 @@ on:
     branches:
       develop
 jobs:
-  checkout-and-print-tree:
+  run-selenoid-tests:
     runs-on: ubuntu-latest
     steps:
       - name: Check out repository code
         uses: actions/checkout@v3
-      - name: Print project tree
-        run: tree .
+      - name: Pull selenoid image
+        run: docker pull selenoid/chrome:128.0
+      - name: Run tests in docker
+        run: docker compose up --build --exit-code-from test_docker
