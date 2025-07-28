@@ -33,8 +33,6 @@ def remote_driver():
         options = ChromeOptions()
         options.set_capability("browserName", "chrome")
         options.set_capability("version", "128.0")
-        options.set_capability("enableVNC", True)
-        options.set_capability("enableVideo", False)
 
         remote_driver = webdriver.Remote(command_executor='http://selenoid:4444/wd/hub', options=options)
     else:
