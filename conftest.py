@@ -32,7 +32,7 @@ def remote_driver():
     if config.remote_driver:
         options = ChromeOptions()
         options.set_capability("browserName", "chrome")
-        options.set_capability("version", "126.0")
+        options.set_capability("version", "128.0")
         options.set_capability("enableVNC", True)
         options.set_capability("enableVideo", False)
 
