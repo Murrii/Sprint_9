@@ -8,6 +8,7 @@ import allure
 import pytest
 import string
 import random
+import config
 
 
 @pytest.fixture
@@ -26,22 +27,21 @@ def generate_password():
     return password
 
 @pytest.fixture
-@allure.title("подключаем удаленный драйвер")
+@allure.title("подключаем удаленный/локальный драйвер в зависимости от настройки конфига")
 def remote_driver():
-    try:
+    if config.remote_driver:
         options = ChromeOptions()
         options.set_capability("browserName", "chrome")
         options.set_capability("version", "126.0")
         options.set_capability("enableVNC", True)
         options.set_capability("enableVideo", False)
 
-        driver = webdriver.Remote(command_executor='http://selenoid:4444/wd/hub', options=options)
-        yield driver
-        driver.quit()
-    except Exception as e:
-        print(f"Failed to connect to Selenoid: {str(e)}")
-        raise
+        remote_driver = webdriver.Remote(command_executor='http://selenoid:4444/wd/hub', options=options)
+    else:
+        remote_driver = webdriver.Chrome()
 
+    yield remote_driver
+    remote_driver.quit()
 
 @pytest.fixture
 @allure.title("открываем страницу регистрации")

@@ -1,47 +1,43 @@
 services:
+
   selenoid:
-    image: "aerokube/selenoid:1.11.3"
+    image: "aerokube/selenoid"
     container_name: selenoid
     ports:
       - "4444:4444"
     networks:
       - selenoid
     volumes:
+      - "./selenoid/browsers.json:/etc/selenoid/browsers.json:ro"
       - "/var/run/docker.sock:/var/run/docker.sock"
-      - "./config/:/etc/selenoid/"
-      - "/c/etc/selenoid/video:/opt/selenoid/video"
-      - "/c/etc/selenoid/logs:/opt/selenoid/logs"
-    environment:
-      - OVERRIDE_VIDEO_OUTPUT_DIR=/c/etc/selenoid/video
-      - OVERRIDE_HTTP_PORT=4444
-      - SERVICE_PORT=4444
-    command: ["-conf", "/etc/selenoid/browsers.json", "-container-network", "selenoid"]
+    command: ["-conf", "/etc/selenoid/browsers.json", "-container-network", "selenoid_net"]
 
   selenoid-ui:
-    image: "aerokube/selenoid-ui:1.10.11"
+    image: "aerokube/selenoid-ui:latest"
     container_name: selenoid-ui
+    links:
+      - selenoid
     ports:
       - "8081:8080"
-    environment:
-      - SELENOID_URL=http://selenoid:4444
     networks:
       - selenoid
-    depends_on:
-      - selenoid
+    command: ["--selenoid-uri", "http://selenoid:4444"]
 
-  test:
+  test_docker:
     build: .
-    container_name: test
-    networks:
-      - selenoid
-    volumes:
-      - "./:/app"
-    working_dir: /app
+    container_name: test_docker
     depends_on:
       - selenoid
-    command: ["pytest"]
+    networks:
+      - selenoid
+    tty: true
     environment:
-      - SELENOID_URL=http://selenoid:4444/wd/hub
+      SELENOID_URI: http://selenoid:4444/wd/hub
+      BROWSER: chrome
+      BROWSER_VERSION: 128.0
+    volumes:
+      - ./reports:/app/reports
+    command: ["pytest", "-v", "--alluredir=reports/allure-results"]
 
 networks:
   selenoid:
